@@ -1,0 +1,10 @@
+Результаты/
+
+*.xlsx
+!example.xlsx
+
+.venv/
+__pycache__/
+
+.DS_Store
+.idea/
