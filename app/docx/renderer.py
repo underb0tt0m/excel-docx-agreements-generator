@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import Optional
-
+from app.config_loader import load_config
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 
@@ -9,9 +9,10 @@ from app.schemas.excel_form import AgreementExcelModel
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 class TemplatePaths:
-    EDO = PROJECT_ROOT / "Шаблоны" / "Шаблон соглашения ЭДО.docx"
-    BRD_SERVICE = PROJECT_ROOT / "Шаблоны" / "Шаблон соглашения БРД Сервисы.docx"
-    BRD_USLUGA = PROJECT_ROOT / "Шаблоны" / "Шаблон соглашения БРД Услуги.docx"
+    TEMPLATES = load_config()
+    EDO = TEMPLATES["EDO"]
+    BRD_SERVICE = TEMPLATES["BRD_service"]
+    BRD_USLUGA = TEMPLATES["BRD_usluga"]
 
 
 class OutputPaths:
