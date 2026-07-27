@@ -1,15 +1,6 @@
-results/
-
 *.xlsx
 !example_data.xlsx
 
-templates/real/
-config.py
-
-cards/services/**
-!cards/services/ООО «Пример Поставщика сервиса»
-cards/uslugi/*
-!cards/uslugi/ООО «Пример Поставщика услуги».png
 
 .venv/
 __pycache__/
@@ -20,3 +11,6 @@ __pycache__/
 build/
 dist/
 *.spec
+
+test.zip
+test_handler.py
