@@ -30,5 +30,5 @@ def read_excel(path: str | Path) -> pd.DataFrame:
     return df
 
 if __name__ == "__main__":
-    data = read_excel('/Users/timur/Desktop/ГПН/Автоматизация заполнения документов/Жизнь тлен/Данные.xlsx')
+    data = read_excel('/Users/timur/Desktop/ГПН/Автоматизация заполнения документов/Жизнь тлен/data.xlsx')
     print(data.iloc[:, [0]])

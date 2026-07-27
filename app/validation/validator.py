@@ -29,7 +29,7 @@ def _print_validation_error(e: ValidationError) -> None:
 if __name__ == "__main__":
     from app.excel.parser import build_tasks_from_master
     from app.excel.reader import read_excel
-    df = read_excel('/Users/timur/Desktop/ГПН/Автоматизация заполнения документов/Жизнь тлен/Данные.xlsx')
+    df = read_excel('/Users/timur/Desktop/ГПН/Автоматизация заполнения документов/Жизнь тлен/data.xlsx')
     data = build_tasks_from_master(df)
     checked_data = validate_contractor_raw(data[0].raw)
     print(checked_data)

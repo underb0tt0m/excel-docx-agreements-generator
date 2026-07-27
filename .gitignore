@@ -1,13 +1,22 @@
-Результаты/
+results/
 
 *.xlsx
-!example.xlsx
+!example_data.xlsx
 
 templates/real/
 config.py
+
+cards/services/**
+!cards/services/ООО «Пример Поставщика сервиса»
+cards/uslugi/*
+!cards/uslugi/ООО «Пример Поставщика услуги».png
 
 .venv/
 __pycache__/
 
 .DS_Store
 .idea/
+
+build/
+dist/
+*.spec

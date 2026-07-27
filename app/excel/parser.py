@@ -90,6 +90,6 @@ def build_tasks_from_master(
 if __name__ == "__main__":
     from app.excel.reader import read_excel
 
-    df = read_excel('/Users/timur/Desktop/ГПН/Автоматизация заполнения документов/Жизнь тлен/Данные.xlsx')
+    df = read_excel('/Users/timur/Desktop/ГПН/Автоматизация заполнения документов/Жизнь тлен/data.xlsx')
     data = build_tasks_from_master(df)
     print(data)

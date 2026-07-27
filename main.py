@@ -1,6 +1,4 @@
-import argparse
-from pathlib import Path
-
+from app.utils.config_loader import load_config
 from app.excel.reader import read_excel
 from app.excel.parser import build_tasks_from_master
 from app.validation.validator import validate_contractor_raw
@@ -8,15 +6,8 @@ from app.docx.renderer import render_documents
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--file",
-        required=True,
-        help="Путь к Excel-файлу с данными",
-    )
-    args = parser.parse_args()
-
-    excel_path = Path(args.file)
+    TEMPLATES = load_config()
+    excel_path = TEMPLATES["data"]
 
     df = read_excel(excel_path)
 

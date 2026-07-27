@@ -1,12 +1,13 @@
 from pathlib import Path
 from typing import Optional
-from app.config_loader import load_config
+from app.utils.config_loader import load_config
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
+from app.utils.paths import get_project_root
 
 from app.schemas.excel_form import AgreementExcelModel
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = get_project_root()
 
 class TemplatePaths:
     TEMPLATES = load_config()
@@ -16,9 +17,9 @@ class TemplatePaths:
 
 
 class OutputPaths:
-    ROOT = PROJECT_ROOT / "Результаты"
-    SERVICES = ROOT / "Поставщики сервисов"
-    USLUGI = ROOT / "Поставщики услуг"
+    ROOT = PROJECT_ROOT / "results"
+    SERVICES = ROOT / "services"
+    USLUGI = ROOT / "uslugi"
 
 
 def _safe_org_dir_name(name: str) -> str:
@@ -30,12 +31,12 @@ def _ensure_dir(path: Path) -> None:
 
 
 def _service_card_paths(org_name: str) -> list[Path]:
-    base = PROJECT_ROOT / "Карточки" / "Сервисы" / org_name
+    base = PROJECT_ROOT / "cards" / "services" / org_name
     return [base / "1.png", base / "2.png", base / "3.png"]
 
 
 def _usluga_card_path(org_name: str) -> Path:
-    return PROJECT_ROOT / "Карточки" / "Услуги" / f"{org_name}.png"
+    return PROJECT_ROOT / "cards" / "uslugi" / f"{org_name}.png"
 
 
 def _build_context(model: AgreementExcelModel) -> dict:
@@ -158,7 +159,7 @@ if __name__ == "__main__":
     from app.excel.reader import read_excel
     from app.validation.validator import validate_contractor_raw
 
-    df = read_excel(PROJECT_ROOT / 'Данные.xlsx')
+    df = read_excel(PROJECT_ROOT / 'data.xlsx')
     data = build_tasks_from_master(df)
     if data:
         checked_data = validate_contractor_raw(data[0].raw)
