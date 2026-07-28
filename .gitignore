@@ -13,4 +13,6 @@ dist/
 *.spec
 
 test.zip
+output.zip
 test_handler.py
+test_client.py

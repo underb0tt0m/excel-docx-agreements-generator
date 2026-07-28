@@ -6,9 +6,18 @@
 
 ## Запуск
 
+### Через Docker (gRPC-сервер)
+
 ```bash
-docker build -t generator .
-cat archive.zip | docker run --rm -i generator > output.zip
+docker build -t worker .
+docker run -p 50051:50051 worker
+```
+
+### Локально
+
+```bash
+pip install -r requirements.txt
+python grpc_server.py
 ```
 
 ---
@@ -68,7 +77,17 @@ output.zip
 │   └── excel/
 │       ├── reader.py    # чтение Excel
 │       └── parser.py    # парсинг контрагентов
-├── test_handler.py      # локальный тест
+├── proto/
+│   └── generator/       # сгенерированные gRPC-файлы
+├── grpc_server.py       # gRPC-сервер
 ├── requirements.txt
 └── Dockerfile
 ```
+
+---
+
+## API (gRPC)
+
+- **Метод**: `Generate`
+- **Запрос**: `GenerateRequest { bytes archive }`
+- **Ответ**: `GenerateResponse { bytes zip_archive, repeated string errors, int32 generated_count }`

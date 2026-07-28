@@ -14,5 +14,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app/ ./app/
+COPY proto/ ./proto/
+COPY grpc_server.py .
 
-ENTRYPOINT ["python", "-c", "from app.handler import generate_from_archive; import sys; result = generate_from_archive(sys.stdin.buffer.read()); sys.stdout.buffer.write(result)"]
+CMD ["python", "grpc_server.py"]
