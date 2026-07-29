@@ -14,5 +14,7 @@ dist/
 
 test.zip
 output.zip
+test/
+output/
 test_handler.py
 test_client.py
