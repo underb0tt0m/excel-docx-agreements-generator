@@ -3,12 +3,17 @@ import tempfile
 from pathlib import Path
 from io import BytesIO
 
+import grpc
+
 from app.excel.reader import read_excel
 from app.excel.parser import parse_contractors
 from app.docx.renderer import render_documents
+from app.exceptions import GeneratorError, ErrorCode
 
 
-def generate_from_archive(archive_bytes: bytes) -> bytes:
+def generate_from_archive(archive_bytes: bytes) -> tuple[bytes, dict[str, list[Exception]], int]:
+
+    all_exceptions = {}
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
@@ -18,12 +23,20 @@ def generate_from_archive(archive_bytes: bytes) -> bytes:
 
         excel_files = list(tmp_path.glob("**/*.xlsx")) + list(tmp_path.glob("**/*.xls"))
         if not excel_files:
-            raise ValueError("No Excel file (.xlsx/.xls) found in archive")
+            raise GeneratorError(
+                message="No Excel file (.xlsx/.xls) found in archive",
+                code=ErrorCode.EXCEL_NOT_FOUND,
+                grpc_code=grpc.StatusCode.INVALID_ARGUMENT
+            )
         excel_path = excel_files[0]
 
         template_files = list(tmp_path.glob("**/*.docx"))
         if not template_files:
-            raise ValueError("No .docx template files found in archive")
+            raise GeneratorError(
+                message="No .docx template files found in archive",
+                code=ErrorCode.TEMPLATE_NOT_FOUND,
+                grpc_code=grpc.StatusCode.INVALID_ARGUMENT
+            )
         templates = [(f.name, f.read_bytes()) for f in template_files]
 
         images = {}
@@ -36,13 +49,15 @@ def generate_from_archive(archive_bytes: bytes) -> bytes:
         contractors = parse_contractors(df)
 
         if not contractors:
-            raise ValueError("No contractors found in Excel")
+            raise GeneratorError(
+                message="No contractors found in Excel",
+                code=ErrorCode.NO_CONTRACTORS,
+                grpc_code=grpc.StatusCode.INVALID_ARGUMENT
+            )
 
         all_results = {}
         for contractor in contractors:
             context = contractor.fields.copy()
-            if "name_short" not in context:
-                context["name_short"] = contractor.name
 
             template_name = context.get("Template")
             chosen_templates = []
@@ -56,7 +71,7 @@ def generate_from_archive(archive_bytes: bytes) -> bytes:
             else:
                 chosen_templates = templates
 
-            rendered = render_documents(
+            rendered, exceptions = render_documents(
                 context=context,
                 template_files=chosen_templates,
                 images=images,
@@ -64,9 +79,10 @@ def generate_from_archive(archive_bytes: bytes) -> bytes:
                 output_filename_template="{contractor}_{template}.docx"
             )
             all_results.update(rendered)
+            all_exceptions.update(exceptions)
 
         zip_buffer = BytesIO()
         with zipfile.ZipFile(zip_buffer, 'w') as zf:
             for filename, content in all_results.items():
                 zf.writestr(filename, content)
-        return zip_buffer.getvalue()
+        return zip_buffer.getvalue(), all_exceptions, len(all_results)
