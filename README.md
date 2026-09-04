@@ -1,28 +1,37 @@
-# Генератор договоров из Excel
+# Генератор договоров из Excel (Python-воркер)
 
-Универсальный инструмент для массовой генерации DOCX-документов из Excel-данных.
+Инструмент для массовой генерации DOCX-документов из Excel-данных.
+
+Работает как **gRPC-сервер** (синхронный вызов) или как **consumer очереди RabbitMQ** (асинхронная обработка).
 
 ---
 
-## Запуск
+## 🚀 Запуск
 
-### Через Docker (gRPC-сервер)
+### Через Docker
 
 ```bash
-docker build -t worker .
-docker run -p 50051:50051 worker
+make docker-build
+
+# gRPC-сервер
+docker-run-server
+
+# Consumer очереди
+docker-run-consumer
 ```
 
 ### Локально
 
 ```bash
 pip install -r requirements.txt
-python grpc_server.py
+python -m cmd.grpc_server.grpc_server
+# или
+python -m cmd.consumer.main
 ```
 
 ---
 
-## Входной архив
+## 📁 Входной архив (ZIP)
 
 ```
 archive.zip
@@ -34,7 +43,7 @@ archive.zip
 
 ---
 
-## Выходной архив
+## 📦 Выходной архив (ZIP)
 
 ```
 output.zip
@@ -45,48 +54,92 @@ output.zip
 
 ---
 
-## Как это работает
+## 🧠 Как это работает
 
-1. Читает Excel, парсит всех контрагентов
-2. Берёт все DOCX-шаблоны из архива
-3. Для каждого контрагента подставляет данные во все шаблоны
-4. Возвращает ZIP с готовыми документами
+1. Читает Excel, парсит всех контрагентов.
+2. Берёт все DOCX-шаблоны из архива.
+3. Для каждого контрагента подставляет данные во все шаблоны.
+4. Возвращает ZIP с готовыми документами.
 
 ---
 
-## Картинки
+## 🖼 Картинки
 
 В шаблоне используй плейсхолдер `{{ image_имя }}`.
 
-В Excel в колонке `image_имя` укажи имя файла (без расширения).
+В Excel в колонке `image_имя` указывается имя файла (без расширения).
 
-Картинки клади в папку `images/` в архиве.
+Картинки кладутся в папку `images/` в архиве.
 
 Если картинка не найдена — вставляется красный квадрат.
 
 ---
 
-## Структура проекта
+## ⚙️ Конфигурация
 
+Файл `config/local.yaml`:
+
+```yaml
+grpc_server:
+  port: 50051
+
+db:
+  host: "host.docker.internal"
+  port: 5432
+  db_name: "generator"
+  user: "postgres"
+
+redis:
+  host: "host.docker.internal"
+  port: 6379
+  job_status_ttl: 600
+
+rabbit_mq:
+  host: "host.docker.internal"
+  port: 5672
+  user: "guest"
+  vhost: "/"
+  queue: "jobs"
 ```
-.
-├── app/
-│   ├── handler.py       # основная логика
-│   ├── docx/
-│   │   └── renderer.py  # рендеринг DOCX + картинки
-│   └── excel/
-│       ├── reader.py    # чтение Excel
-│       └── parser.py    # парсинг контрагентов
-├── proto/
-│   └── generator/       # сгенерированные gRPC-файлы
-├── grpc_server.py       # gRPC-сервер
-├── requirements.txt
-└── Dockerfile
+
+Пароли и чувствительные данные загружаются из `.env`:
+
+```env
+DB_PASSWORD=password
+REDIS_PASSWORD=password
+RABBITMQ_PASSWORD=password
 ```
 
 ---
 
-## API (gRPC)
+## 📦 Структура проекта
+
+```
+.
+├── cmd/
+│   ├── grpc_server/           # gRPC-сервер
+│   │   └── grpc_server.py
+│   └── consumer/              # консьюмер RabbitMQ
+│       └── main.py
+├── internal/
+│   ├── app/                   # бизнес-логика
+│   │   ├── generator/         # генерация документов
+│   │   ├── docx/              # рендеринг DOCX
+│   │   ├── excel/             # парсинг Excel
+│   │   └── exceptions.py
+│   ├── config/                # загрузка конфигурации
+│   ├── infrastructure/        # работа с БД, Redis, RabbitMQ
+│   ├── processor/             # обработка задач (JobProcessor, MessageHandler)
+│   └── logger/                # настройка логирования
+├── proto/                     # сгенерированные protobuf
+├── requirements.txt
+├── Dockerfile
+└── README.md
+```
+
+---
+
+## 🔌 API (gRPC)
 
 - **Метод**: `Generate`
 - **Запрос**: `GenerateRequest { bytes archive }`

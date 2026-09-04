@@ -1,0 +1,21 @@
+grpc_server:
+  port: 50051
+
+db:
+  host: "host.docker.internal"
+  port: 5432
+  db_name: "generator"
+  user: "postgres"
+
+redis:
+  host: "host.docker.internal"
+  port: 6379
+  job_status_ttl: 600
+
+rabbit_mq:
+  host: "host.docker.internal"
+  port: 5672
+  user: "guest"
+  v_host: "/"
+  queue: "jobs"
+
