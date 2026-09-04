@@ -13,8 +13,9 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app/ ./app/
+COPY "cmd/" "./cmd/"
 COPY proto/ ./proto/
-COPY grpc_server.py .
+COPY internal/ ./internal/
 
-CMD ["python", "grpc_server.py"]
+ENTRYPOINT ["python", "-m"]
+CMD ["cmd.grpc_server.grpc_server"]

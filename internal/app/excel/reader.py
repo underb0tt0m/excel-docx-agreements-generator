@@ -2,7 +2,7 @@ import grpc
 import pandas as pd
 from pathlib import Path
 
-from app.exceptions import GeneratorError, ErrorCode
+from internal.app.exceptions import GeneratorError, ErrorCode
 
 
 def read_excel(path: str | Path) -> pd.DataFrame:

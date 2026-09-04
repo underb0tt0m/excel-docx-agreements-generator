@@ -1,4 +1,3 @@
-import time
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
@@ -9,7 +8,7 @@ from docx.shared import Mm
 import tempfile
 from PIL import Image
 
-from app.exceptions import GeneratorError, ErrorCode
+from internal.app.exceptions import GeneratorError, ErrorCode
 
 
 def generate_placeholder_png(size=(100, 100), color='red') -> bytes:

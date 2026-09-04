@@ -5,10 +5,10 @@ from io import BytesIO
 
 import grpc
 
-from app.excel.reader import read_excel
-from app.excel.parser import parse_contractors
-from app.docx.renderer import render_documents
-from app.exceptions import GeneratorError, ErrorCode
+from internal.app.excel.parser import parse_contractors
+from internal.app.docx.renderer import render_documents
+from internal.app.excel.reader import read_excel
+from internal.app.exceptions import GeneratorError, ErrorCode
 
 
 def generate_from_archive(archive_bytes: bytes) -> tuple[bytes, dict[str, list[Exception]], int]:

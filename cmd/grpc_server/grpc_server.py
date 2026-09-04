@@ -2,8 +2,9 @@ from concurrent import futures
 
 import grpc
 
-from app.exceptions import GeneratorError, ErrorCode
-from app.handler import generate_from_archive
+from internal.app.exceptions import GeneratorError, ErrorCode
+from internal.app.generator.handler import generate_from_archive
+from internal.config.config import config
 from proto.generator.generator_pb2 import GenerateResponse, FileErrors, FileError
 from proto.generator.generator_pb2_grpc import GeneratorServicer, add_GeneratorServicer_to_server
 
@@ -48,8 +49,9 @@ class GeneratorServicer(GeneratorServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     add_GeneratorServicer_to_server(GeneratorServicer(), server)
-    server.add_insecure_port("[::]:50051")
-    print("Server started in port 50051")
+    port = config.grpc_server_cfg.get('port')
+    server.add_insecure_port(f"[::]:{port}")
+    print(f"Server started in port {port}")
     server.start()
     server.wait_for_termination()
 
