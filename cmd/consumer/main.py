@@ -7,7 +7,7 @@ from internal.processor.job_processor import JobProcessor
 from internal.processor.message_handler import MessageHandler
 
 
-def main():
+def run_consumer():
     db = DatabaseClient(config)
     db.connect()
 
@@ -24,4 +24,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_consumer()

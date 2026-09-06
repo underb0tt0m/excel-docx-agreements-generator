@@ -8,9 +8,11 @@ load_dotenv()
 class Config:
     def __init__(self, config_path=None):
         if config_path is None:
-            config_path = os.getenv('CONFIG_PATH', './config/local.yaml')
+            config_path = os.getenv('CONFIG_PATH', './config/config.yaml')
         with open(config_path, 'r') as f:
             data = yaml.safe_load(f)
+
+        self.exec_mode = data.get('execution_mode', "")
 
         grpc_server_cfg = data.get('grpc_server', {})
         self.grpc_server_cfg = {
