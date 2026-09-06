@@ -1,3 +1,5 @@
+execution_mode: "grpc" #grpc | queue
+
 grpc_server:
   port: 50051
 

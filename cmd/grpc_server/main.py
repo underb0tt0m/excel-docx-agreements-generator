@@ -46,7 +46,7 @@ class GeneratorServicer(GeneratorServicer):
             generated_count=cnt
         )
 
-def serve():
+def run_server():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     add_GeneratorServicer_to_server(GeneratorServicer(), server)
     port = config.grpc_server_cfg.get('port')
@@ -56,4 +56,4 @@ def serve():
     server.wait_for_termination()
 
 if __name__ == '__main__':
-    serve()
+    run_server()

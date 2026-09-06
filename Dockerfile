@@ -17,5 +17,4 @@ COPY "cmd/" "./cmd/"
 COPY proto/ ./proto/
 COPY internal/ ./internal/
 
-ENTRYPOINT ["python", "-m"]
-CMD ["cmd.grpc_server.grpc_server"]
+ENTRYPOINT ["python", "-m", "cmd.main"]
