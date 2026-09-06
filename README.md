@@ -13,20 +13,14 @@
 ```bash
 make docker-build
 
-# gRPC-сервер
-docker-run-server
-
-# Consumer очереди
-docker-run-consumer
+make docker-run
 ```
 
 ### Локально
 
 ```bash
 pip install -r requirements.txt
-python -m cmd.grpc_server.grpc_server
-# или
-python -m cmd.consumer.main
+python -m cmd.main
 ```
 
 ---
@@ -80,6 +74,8 @@ output.zip
 Файл `config/local.yaml`:
 
 ```yaml
+execution_mode: "grpc" #grpc | queue
+
 grpc_server:
   port: 50051
 
@@ -98,7 +94,7 @@ rabbit_mq:
   host: "host.docker.internal"
   port: 5672
   user: "guest"
-  vhost: "/"
+  v_host: "/"
   queue: "jobs"
 ```
 
@@ -117,8 +113,9 @@ RABBITMQ_PASSWORD=password
 ```
 .
 ├── cmd/
+    ├── main.py                # главная точка входа
 │   ├── grpc_server/           # gRPC-сервер
-│   │   └── grpc_server.py
+│   │   └── main.py
 │   └── consumer/              # консьюмер RabbitMQ
 │       └── main.py
 ├── internal/
