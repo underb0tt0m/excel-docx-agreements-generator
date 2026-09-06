@@ -20,4 +20,3 @@ rabbit_mq:
   user: "guest"
   v_host: "/"
   queue: "jobs"
-
