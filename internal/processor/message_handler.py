@@ -1,6 +1,8 @@
 import json
+import time
 
 from internal.logger.logger import logger
+from internal.metrics import queue_wait_duration
 
 
 class MessageHandler:
@@ -15,6 +17,16 @@ class MessageHandler:
             if not job_id:
                 ch.basic_ack(delivery_tag=method.delivery_tag)
                 return
+
+            enqueued_at_unix_ms = data.get("enqueued_at_unix_ms")
+            if enqueued_at_unix_ms is not None:
+                wait_seconds = (
+                                       time.time() * 1000 - enqueued_at_unix_ms
+                               ) / 1000
+
+                if wait_seconds >= 0:
+                    queue_wait_duration.observe(wait_seconds)
+
 
             status = self.processor.process(job_id)
             logger.info(f"Job {job_id} finished with status {status}")

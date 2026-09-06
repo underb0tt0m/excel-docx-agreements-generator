@@ -1,3 +1,5 @@
+from prometheus_client import start_http_server
+
 from internal.app.generator.service import GeneratorService
 from internal.config.config import config
 from internal.infrastructure.db import DatabaseClient
@@ -8,6 +10,8 @@ from internal.processor.message_handler import MessageHandler
 
 
 def run_consumer():
+    start_http_server(8001)
+
     db = DatabaseClient(config)
     db.connect()
 
