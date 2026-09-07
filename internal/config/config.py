@@ -14,6 +14,8 @@ class Config:
 
         self.exec_mode = data.get('execution_mode', "")
 
+        self.max_workers = data.get('max_workers', 10)
+
         grpc_server_cfg = data.get('grpc_server', {})
         self.grpc_server_cfg = {
             'port': int(grpc_server_cfg.get('port', 50051))
@@ -25,7 +27,8 @@ class Config:
             'port': int(db_cfg.get('port', 5432)),
             'db_name': db_cfg.get('db_name', 'generator'),
             'user': db_cfg.get('user'),
-            'password': os.getenv('DB_PASSWORD')
+            'password': os.getenv('DB_PASSWORD'),
+            'max_conn': db_cfg.get('max_conn', 10),
         }
 
         redis_cfg = data.get('redis', {})
