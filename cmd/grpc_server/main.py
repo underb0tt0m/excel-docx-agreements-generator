@@ -100,7 +100,8 @@ class GeneratorServicer(GeneratorServicer):
 def run_server():
     start_http_server(8001)
 
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    max_workers = config.max_workers
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers))
     add_GeneratorServicer_to_server(GeneratorServicer(), server)
     port = config.grpc_server_cfg.get('port')
     server.add_insecure_port(f"[::]:{port}")

@@ -11,7 +11,10 @@ job_processing_duration = Histogram(
     "generator_worker_job_processing_duration_seconds",
     "Time spent processing a generation job inside worker",
     ["mode", "result"],
-    buckets=(0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 30, 60),
+    buckets=(
+        0.05, 0.1, 0.15, 0.2, 0.25,
+        0.3, 0.5, 1, 2, 5, 10, 20, 30, 60
+    ),
 )
 
 jobs_processed_total = Counter(
@@ -24,11 +27,17 @@ generation_duration = Histogram(
     "generator_worker_generation_duration_seconds",
     "Time spent specifically generating documents",
     ["mode"],
-    buckets=(0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 30, 60),
+    buckets=(
+        0.05, 0.1, 0.15, 0.2, 0.25,
+        0.3, 0.5, 1, 2, 5, 10, 20, 30, 60
+    ),
 )
 
 queue_wait_duration = Histogram(
     "generator_queue_wait_duration_seconds",
     "Time a job waits before RabbitMQ worker starts processing it",
-    buckets=(0.01, 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 30, 60),
+    buckets=(
+        0.01, 0.05, 0.1, 0.25, 0.5,
+        1, 2, 5, 10, 15, 20, 25, 30, 45, 60
+    ),
 )

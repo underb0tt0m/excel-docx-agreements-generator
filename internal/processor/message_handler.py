@@ -27,15 +27,18 @@ class MessageHandler:
                 if wait_seconds >= 0:
                     queue_wait_duration.observe(wait_seconds)
 
-
             status = self.processor.process(job_id)
             logger.info(f"Job {job_id} finished with status {status}")
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
+
         except Exception as e:
             logger.error(f"Error processing job {job_id}: {e}")
             self._handle_failure(job_id, str(e))
-            ch.basic_ack(delivery_tag=method.delivery_tag)
+            ch.basic_nack(
+                delivery_tag=method.delivery_tag,
+                requeue=False,
+            )
 
     def _handle_failure(self, job_id, error):
         try:
